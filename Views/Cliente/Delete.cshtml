@@ -1,0 +1,67 @@
+@model MotoFix.Models.Cliente
+
+@{
+    ViewData["Title"] = "Eliminar Cliente";
+}
+
+<div class="container mt-4">
+    <h1>Eliminar Cliente</h1>
+
+    <div class="alert alert-danger mt-4">
+        <h4>¿Estás seguro de que deseas eliminar este cliente?</h4>
+        <p>
+            Esta acción no se puede deshacer.
+        </p>
+    </div>
+
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-3">
+            Nombre completo
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Nombre @Model.Apellido
+        </dd>
+
+        <dt class="col-sm-3">
+            Documento
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Documento
+        </dd>
+
+        <dt class="col-sm-3">
+            Teléfono
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Telefono
+        </dd>
+
+        <dt class="col-sm-3">
+            Correo
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Correo
+        </dd>
+
+        <dt class="col-sm-3">
+            Motocicletas
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Motocicletas.Count
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <button type="submit" class="btn btn-danger">
+            Sí, eliminar
+        </button>
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Cancelar
+        </a>
+    </form>
+</div>
