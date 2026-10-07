@@ -1,0 +1,75 @@
+@model MotoFix.Models.Motocicleta
+
+@{
+    ViewData["Title"] = "Nueva Motocicleta";
+}
+
+<div class="container mt-4">
+    <h1>Nueva Motocicleta</h1>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" method="post">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Placa" class="form-label"></label>
+                    <input asp-for="Placa" class="form-control" />
+                    <span asp-validation-for="Placa" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Marca" class="form-label"></label>
+                    <input asp-for="Marca" class="form-control" />
+                    <span asp-validation-for="Marca" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Modelo" class="form-label"></label>
+                    <input asp-for="Modelo" class="form-control" />
+                    <span asp-validation-for="Modelo" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Cilindraje" class="form-label"></label>
+                    <input asp-for="Cilindraje" class="form-control" type="number" />
+                    <span asp-validation-for="Cilindraje" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ClienteId" class="form-label">
+                        Propietario
+                    </label>
+
+                    <select asp-for="ClienteId"
+                            class="form-select"
+                            asp-items="@(new SelectList(ViewBag.Clientes, "Id", "Nombre"))">
+                        <option value="">-- Seleccione un cliente --</option>
+                    </select>
+
+                    <span asp-validation-for="ClienteId" class="text-danger"></span>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        Guardar
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

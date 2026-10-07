@@ -1,0 +1,67 @@
+@model MotoFix.Models.Motocicleta
+
+@{
+    ViewData["Title"] = "Detalles de la Motocicleta";
+}
+
+<div class="container mt-4">
+    <h1>Detalles de la Motocicleta</h1>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <dl class="row">
+                <dt class="col-sm-4">
+                    Placa
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.Placa
+                </dd>
+
+                <dt class="col-sm-4">
+                    Marca
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.Marca
+                </dd>
+
+                <dt class="col-sm-4">
+                    Modelo
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.Modelo
+                </dd>
+
+                <dt class="col-sm-4">
+                    Cilindraje
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.Cilindraje cc
+                </dd>
+
+                <dt class="col-sm-4">
+                    Propietario
+                </dt>
+                <dd class="col-sm-8">
+                    @Model.Cliente?.Nombre @Model.Cliente?.Apellido
+                </dd>
+            </dl>
+
+            <div class="mt-4">
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-warning">
+                    Editar
+                </a>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Volver
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>

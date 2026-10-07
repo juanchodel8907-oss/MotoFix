@@ -20,6 +20,6 @@ namespace MotoFix.Models
 
         public int ClienteId { get; set; }
 
-        public Cliente Cliente { get; set; } = null!;
+        public Cliente? Cliente { get; set; } 
     }
 }
