@@ -1,0 +1,114 @@
+
+@model MotoFix.Models.EditRoleViewModel
+
+@{
+    ViewData["Title"] = "Editar rol";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow">
+                <div class="card-header">
+                    <h3 class="mb-0">Editar rol</h3>
+                </div>
+
+                <div class="card-body">
+
+                    <form asp-controller="Roles"
+                          asp-action="Edit"
+                          method="post">
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="Nombre"
+                                   class="form-label"></label>
+
+                            <input asp-for="Nombre"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Nombre"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <hr />
+
+                        <h5 class="mb-3">Permisos del rol</h5>
+
+                        <p class="text-muted">
+                            Marca o desmarca los permisos que deseas asignar.
+                        </p>
+
+                        @if (Model.PermisosDisponibles.Any())
+                        {
+                            <div class="row">
+
+                                @foreach (var permiso in Model.PermisosDisponibles)
+                                {
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check border rounded p-3">
+
+                                            <input class="form-check-input ms-0 me-2"
+                                                   type="checkbox"
+                                                   name="PermisosSeleccionados"
+                                                   value="@permiso.Id"
+                                                   id="permiso_@permiso.Id"
+                                                   checked="@Model.PermisosSeleccionados.Contains(permiso.Id)" />
+
+                                            <label class="form-check-label"
+                                                   for="permiso_@permiso.Id">
+
+                                                <strong>@permiso.Nombre</strong>
+
+                                                <br />
+
+                                                <small class="text-muted">
+                                                    @permiso.Descripcion
+                                                </small>
+
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning">
+                                No hay permisos registrados.
+                            </div>
+                        }
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 mt-3">
+                            Guardar cambios
+                        </button>
+
+                    </form>
+
+                    <div class="mt-3">
+                        <a asp-controller="Roles"
+                           asp-action="Index"
+                           class="btn btn-outline-secondary w-100">
+                            Volver a roles
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

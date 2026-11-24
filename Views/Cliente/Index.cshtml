@@ -1,7 +1,22 @@
+// espera recibir una colección de clientes
 @model IEnumerable<MotoFix.Models.Cliente>
 
 @{
     ViewData["Title"] = "Clientes";
+}
+
+@if (TempData["MensajeExito"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["MensajeExito"]
+    </div>
+}
+
+@if (TempData["MensajeError"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["MensajeError"]
+    </div>
 }
 
 <div class="container mt-4">
