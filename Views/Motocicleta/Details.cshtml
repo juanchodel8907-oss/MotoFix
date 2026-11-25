@@ -1,67 +1,324 @@
+
 @model MotoFix.Models.Motocicleta
+
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Detalles de la Motocicleta";
+
+    var puedeEditar = (await AuthorizationService.AuthorizeAsync(
+        User, "Motocicletas.Editar")).Succeeded;
 }
 
-<div class="container mt-4">
-    <h1>Detalles de la Motocicleta</h1>
+<style>
+    .details-page {
+        max-width: 1050px;
+        margin: 35px auto;
+    }
 
-    <hr />
+    .details-header {
+        margin-bottom: 25px;
+    }
 
-    <div class="row">
-        <div class="col-md-6">
+    .details-header h1 {
+        color: #172554;
+        font-weight: 750;
+        margin-bottom: 8px;
+    }
 
-            <dl class="row">
-                <dt class="col-sm-4">
-                    Placa
-                </dt>
-                <dd class="col-sm-8">
+    .details-header p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    .details-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+        margin-bottom: 24px;
+    }
+
+    .vehicle-profile {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 25px;
+    }
+
+    .vehicle-icon {
+        width: 65px;
+        height: 65px;
+        border-radius: 16px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        flex-shrink: 0;
+    }
+
+    .vehicle-name {
+        color: #172554;
+        font-size: 1.4rem;
+        font-weight: 750;
+        margin-bottom: 7px;
+    }
+
+    .vehicle-plate {
+        display: inline-block;
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        padding: 5px 12px;
+        font-size: 0.85rem;
+        font-weight: 750;
+        letter-spacing: 1px;
+    }
+
+    .section-title {
+        color: #1e3a8a;
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        padding: 17px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        height: 100%;
+    }
+
+    .info-label {
+        color: #64748b;
+        font-size: 0.85rem;
+        margin-bottom: 7px;
+        font-weight: 600;
+    }
+
+    .info-value {
+        color: #1e293b;
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .owner-card {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 18px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+    }
+
+    .owner-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: 750;
+        flex-shrink: 0;
+    }
+
+    .owner-name {
+        color: #1e293b;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .owner-description {
+        color: #64748b;
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    .details-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-edit {
+        background: #1d4ed8;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 22px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-edit:hover {
+        background: #1e40af;
+        color: white;
+    }
+
+    .btn-back {
+        background: #f1f5f9;
+        color: #334155;
+        border-radius: 9px;
+        padding: 11px 22px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    @@media (max-width: 576px) {
+        .details-card {
+            padding: 22px 18px;
+        }
+
+        .vehicle-profile {
+            align-items: flex-start;
+        }
+
+        .details-actions {
+            flex-direction: column;
+        }
+
+        .details-actions a {
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="container details-page">
+
+    <div class="details-header">
+        <h1>Ficha técnica de la motocicleta</h1>
+        <p>Consulta la información del vehículo y los datos de su propietario.</p>
+    </div>
+
+    <div class="details-card">
+
+        <div class="vehicle-profile">
+
+            <div class="vehicle-icon">
+                🏍️
+            </div>
+
+            <div>
+                <h2 class="vehicle-name">
+                    @Model.Marca @Model.Modelo
+                </h2>
+
+                <span class="vehicle-plate">
                     @Model.Placa
-                </dd>
-
-                <dt class="col-sm-4">
-                    Marca
-                </dt>
-                <dd class="col-sm-8">
-                    @Model.Marca
-                </dd>
-
-                <dt class="col-sm-4">
-                    Modelo
-                </dt>
-                <dd class="col-sm-8">
-                    @Model.Modelo
-                </dd>
-
-                <dt class="col-sm-4">
-                    Cilindraje
-                </dt>
-                <dd class="col-sm-8">
-                    @Model.Cilindraje cc
-                </dd>
-
-                <dt class="col-sm-4">
-                    Propietario
-                </dt>
-                <dd class="col-sm-8">
-                    @Model.Cliente?.Nombre @Model.Cliente?.Apellido
-                </dd>
-            </dl>
-
-            <div class="mt-4">
-                <a asp-action="Edit"
-                   asp-route-id="@Model.Id"
-                   class="btn btn-warning">
-                    Editar
-                </a>
-
-                <a asp-action="Index"
-                   class="btn btn-secondary">
-                    Volver
-                </a>
+                </span>
             </div>
 
         </div>
+
+        <h5 class="section-title">
+            Información del vehículo
+        </h5>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <div class="info-item">
+                    <p class="info-label">Placa</p>
+                    <p class="info-value">@Model.Placa</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="info-item">
+                    <p class="info-label">Marca</p>
+                    <p class="info-value">@Model.Marca</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="info-item">
+                    <p class="info-label">Modelo</p>
+                    <p class="info-value">@Model.Modelo</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="info-item">
+                    <p class="info-label">Cilindraje</p>
+                    <p class="info-value">@Model.Cilindraje cc</p>
+                </div>
+            </div>
+
+        </div>
+
     </div>
+
+    <div class="details-card">
+
+        <h5 class="section-title">
+            Información del propietario
+        </h5>
+
+        @if (Model.Cliente != null)
+        {
+            <div class="owner-card">
+
+                <div class="owner-avatar">
+                    @(string.IsNullOrWhiteSpace(Model.Cliente.Nombre)
+                        ? "C"
+                        : Model.Cliente.Nombre.Substring(0, 1).ToUpper())
+                </div>
+
+                <div>
+                    <p class="owner-name">
+                        @Model.Cliente.Nombre @Model.Cliente.Apellido
+                    </p>
+
+                    <p class="owner-description">
+                        Propietario registrado en MotoFix
+                    </p>
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <p class="text-secondary mb-0">
+                No se encontró información del propietario.
+            </p>
+        }
+
+    </div>
+
+    <div class="details-actions">
+
+        @if (puedeEditar)
+        {
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn-edit">
+                Editar motocicleta
+            </a>
+        }
+
+        <a asp-action="Index" class="btn-back">
+            Volver a motocicletas
+        </a>
+
+    </div>
+
 </div>

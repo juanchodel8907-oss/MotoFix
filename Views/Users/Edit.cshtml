@@ -1,0 +1,309 @@
+
+@model MotoFix.Models.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Editar usuario";
+}
+
+<style>
+    .user-edit-page {
+        padding-top: 30px;
+        padding-bottom: 40px;
+    }
+
+    .user-edit-header {
+        margin-bottom: 25px;
+    }
+
+    .user-edit-header h2 {
+        color: #172554;
+        font-weight: 750;
+        margin-bottom: 6px;
+    }
+
+    .user-edit-header p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    .user-edit-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .06);
+    }
+
+    .user-edit-card-header {
+        background: linear-gradient(135deg, #172554, #1e40af);
+        color: white;
+        padding: 23px 27px;
+    }
+
+    .user-edit-card-header h4 {
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .user-edit-card-header p {
+        color: #bfdbfe;
+        margin: 0;
+        font-size: .9rem;
+    }
+
+    .user-edit-card-body {
+        padding: 28px;
+    }
+
+    .user-edit-section-title {
+        color: #172554;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .user-edit-label {
+        color: #334155;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .user-edit-control {
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 11px 13px;
+        color: #1e293b;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+    .user-edit-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, .13);
+    }
+
+    .user-edit-help {
+        display: block;
+        margin-top: 7px;
+        color: #64748b;
+        font-size: .82rem;
+    }
+
+    .user-edit-role-info {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 9px;
+        padding: 13px 15px;
+        margin-top: 12px;
+        color: #1e40af;
+        font-size: .85rem;
+    }
+
+    .user-edit-submit {
+        background: #2563eb;
+        border: none;
+        border-radius: 9px;
+        color: white;
+        padding: 12px 20px;
+        font-weight: 650;
+        transition: background .2s, transform .2s;
+    }
+
+    .user-edit-submit:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    .user-edit-cancel {
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        color: #475569;
+        background: white;
+        padding: 12px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background .2s;
+    }
+
+    .user-edit-cancel:hover {
+        background: #f1f5f9;
+        color: #172554;
+    }
+
+    @@media (max-width: 576px) {
+        .user-edit-card-body {
+            padding: 20px;
+        }
+
+        .user-edit-actions {
+            flex-direction: column;
+        }
+
+        .user-edit-actions button,
+        .user-edit-actions a {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="container user-edit-page">
+
+    <!-- Encabezado -->
+    <div class="user-edit-header">
+        <h2>Editar usuario</h2>
+        <p>
+            Actualiza la información de la cuenta y administra su rol dentro de MotoFix.
+        </p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="user-edit-card">
+
+                <!-- Cabecera -->
+                <div class="user-edit-card-header">
+                    <h4>Actualizar cuenta</h4>
+                    <p>
+                        Modifica los datos del usuario y guarda los cambios realizados.
+                    </p>
+                </div>
+
+                <div class="user-edit-card-body">
+
+                    <form asp-controller="Users"
+                          asp-action="Edit"
+                          method="post">
+
+                        <!-- Identificador del usuario -->
+                        <input type="hidden" asp-for="Id" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger"
+                             role="alert"></div>
+
+                        <!-- Información personal -->
+                        <h5 class="user-edit-section-title">
+                            Información personal
+                        </h5>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Nombre"
+                                       class="form-label user-edit-label">
+                                </label>
+
+                                <input asp-for="Nombre"
+                                       class="form-control user-edit-control"
+                                       placeholder="Nombre del usuario" />
+
+                                <span asp-validation-for="Nombre"
+                                      class="text-danger small">
+                                </span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Apellido"
+                                       class="form-label user-edit-label">
+                                </label>
+
+                                <input asp-for="Apellido"
+                                       class="form-control user-edit-control"
+                                       placeholder="Apellido del usuario" />
+
+                                <span asp-validation-for="Apellido"
+                                      class="text-danger small">
+                                </span>
+                            </div>
+
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Email"
+                                   class="form-label user-edit-label">
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control user-edit-control"
+                                   placeholder="correo@ejemplo.com" />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger small">
+                            </span>
+
+                            <small class="user-edit-help">
+                                Verifica que la dirección de correo sea correcta.
+                            </small>
+                        </div>
+
+                        <!-- Administración del rol -->
+                        <h5 class="user-edit-section-title">
+                            Administración de permisos
+                        </h5>
+
+                        <div class="mb-4">
+
+                            <label asp-for="RoleName"
+                                   class="form-label user-edit-label">
+                                Rol del usuario
+                            </label>
+
+                            <select asp-for="RoleName"
+                                    class="form-select user-edit-control">
+
+                                <option value="">
+                                    Selecciona un rol
+                                </option>
+
+                                @foreach (var role in Model.Roles)
+                                {
+                                    <option value="@role">@role</option>
+                                }
+
+                            </select>
+
+                            <span asp-validation-for="RoleName"
+                                  class="text-danger small">
+                            </span>
+
+                            <div class="user-edit-role-info">
+                                <strong>Control de acceso:</strong>
+                                el rol determina las funcionalidades y operaciones
+                                que el usuario puede realizar dentro del sistema.
+                            </div>
+
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between gap-3 user-edit-actions">
+
+                            <a asp-controller="Users"
+                               asp-action="Index"
+                               class="user-edit-cancel">
+                                ← Volver a usuarios
+                            </a>
+
+                            <button type="submit"
+                                    class="user-edit-submit">
+                                Guardar cambios
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

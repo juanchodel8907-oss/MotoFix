@@ -1,56 +1,387 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿
+@inject Microsoft.AspNetCore.Authorization.IAuthorizationService AuthorizationService
+
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - MotoFix</title>
-    <script type="importmap"></script>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MotoFix.styles.css" asp-append-version="true" />
+
+    <style>
+        :root {
+            --motofix-primary: #173b70;
+            --motofix-dark: #101d35;
+            --motofix-accent: #3985e8;
+            --motofix-background: #f4f7fb;
+        }
+
+        body {
+            background-color: var(--motofix-background);
+            color: #26364d;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra de navegación */
+
+        .motofix-navbar {
+            background: linear-gradient(110deg, var(--motofix-dark), var(--motofix-primary));
+            padding: 12px 0;
+            box-shadow: 0 4px 15px rgba(15, 35, 65, 0.15);
+        }
+
+        .motofix-brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: white !important;
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--motofix-accent);
+            color: white;
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .motofix-brand:hover {
+            color: #dceaff !important;
+        }
+
+        .motofix-navbar .navbar-nav {
+            align-items: center;
+            gap: 5px;
+        }
+
+        .motofix-navbar .nav-link {
+            color: #d8e5f7 !important;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 9px 13px !important;
+            border-radius: 8px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .motofix-navbar .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .motofix-navbar .navbar-toggler {
+            border-color: rgba(255,255,255,0.35);
+        }
+
+        .motofix-navbar .navbar-toggler-icon {
+            filter: brightness(0) invert(1);
+        }
+
+        .profile-link {
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+
+        .logout-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* Contenido */
+
+        .motofix-main {
+            flex: 1;
+            padding-top: 18px;
+            padding-bottom: 35px;
+        }
+
+        /* Pie de página */
+
+        .motofix-footer {
+            background: white;
+            border-top: 1px solid #e4eaf2;
+            padding: 20px 0;
+            color: #7b8798;
+            font-size: 13px;
+        }
+
+        .motofix-footer strong {
+            color: var(--motofix-primary);
+        }
+
+        @@media (max-width: 991px) {
+            .motofix-navbar .navbar-nav {
+                align-items: stretch;
+                padding-top: 12px;
+            }
+
+            .motofix-navbar .nav-link {
+                padding: 10px 12px !important;
+            }
+
+            .motofix-navbar .navbar-collapse {
+                padding-bottom: 8px;
+            }
+
+            .profile-link {
+                border: none;
+            }
+        }
+    </style>
 </head>
+
 <body>
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MotoFix</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg motofix-navbar">
+            <div class="container">
+
+                <a class="navbar-brand motofix-brand"
+                   asp-controller="Home"
+                   asp-action="Index">
+
+                    <span class="brand-icon">MF</span>
+                    <span>MotoFix</span>
+                </a>
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#motofixNavbar"
+                        aria-controls="motofixNavbar"
+                        aria-expanded="false"
+                        aria-label="Abrir navegación">
+
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="motofixNavbar">
+
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Index">
+                                Inicio
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cliente" asp-action="Index">Clientes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Motocicleta" asp-action="Index">Motocicletas</a>
-                        </li>
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @if ((await AuthorizationService.AuthorizeAsync(
+                                User, null, "Clientes.Ver")).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Cliente"
+                                       asp-action="Index">
+                                        Clientes
+                                    </a>
+                                </li>
+                            }
+
+                            @if ((await AuthorizationService.AuthorizeAsync(
+                                User, null, "Motocicletas.Ver")).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Motocicleta"
+                                       asp-action="Index">
+                                        Motocicletas
+                                    </a>
+                                </li>
+                            }
+
+                            @if ((await AuthorizationService.AuthorizeAsync(
+                                User, null, "Usuarios.Gestionar")).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Users"
+                                       asp-action="Index">
+                                        Usuarios
+                                    </a>
+                                </li>
+                            }
+
+                            @if ((await AuthorizationService.AuthorizeAsync(
+                                User, null, "Roles.Gestionar")).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Roles"
+                                       asp-action="Index">
+                                        Roles y permisos
+                                    </a>
+                                </li>
+                            }
+                        }
                     </ul>
+
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link profile-link"
+                                   asp-controller="Account"
+                                   asp-action="Profile">
+                                    Mi perfil
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <form asp-controller="Account"
+                                      asp-action="Logout"
+                                      method="post"
+                                      class="d-inline">
+
+                                    <button type="submit"
+                                            class="nav-link logout-button">
+                                        Cerrar sesión
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Account"
+                                   asp-action="Login">
+                                    Iniciar sesión
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - MotoFix - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+    <main role="main" class="motofix-main">
+
+        @{
+            var successMessage =
+                TempData["SuccessMessage"] as string
+                ?? TempData["MensajeExito"] as string;
+
+            var errorMessage =
+                TempData["Error"] as string
+                ?? TempData["MensajeError"] as string;
+
+            var warningMessage =
+                TempData["WarningMessage"] as string;
+
+            var infoMessage =
+                TempData["InfoMessage"] as string;
+        }
+
+        <div class="container pt-3">
+
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="alert alert-success alert-dismissible fade show shadow-sm"
+                    role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    @successMessage
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm"
+                    role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                    @errorMessage
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(warningMessage))
+            {
+                <div class="alert alert-warning alert-dismissible fade show shadow-sm"
+                    role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    @warningMessage
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(infoMessage))
+            {
+                <div class="alert alert-info alert-dismissible fade show shadow-sm"
+                    role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i>
+                    @infoMessage
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+            }
+
+        </div>
+
+        @RenderBody()
+
+    </main>
+
+
+    <footer class="motofix-footer">
+        <div class="container text-center">
+            <strong>MotoFix</strong>
+            <span> · Sistema de gestión de talleres de motocicletas</span>
+
+            <div class="mt-1">
+                &copy; 2026 MotoFix. Todos los derechos reservados.
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

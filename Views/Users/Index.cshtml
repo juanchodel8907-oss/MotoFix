@@ -1,0 +1,374 @@
+
+@model IEnumerable<MotoFix.Models.UserListViewModel>
+
+@{
+    ViewData["Title"] = "Gestión de usuarios";
+
+    var usuarios = Model.ToList();
+    var totalUsuarios = usuarios.Count;
+}
+
+<style>
+    .usuarios-page {
+        padding-top: 28px;
+        padding-bottom: 35px;
+    }
+
+    .usuarios-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .usuarios-header h2 {
+        color: #172554;
+        font-weight: 750;
+        margin-bottom: 6px;
+    }
+
+    .usuarios-header p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    .usuarios-btn-primary {
+        background: #2563eb;
+        border: none;
+        color: white;
+        padding: 11px 18px;
+        border-radius: 9px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background .2s, transform .2s;
+        white-space: nowrap;
+    }
+
+    .usuarios-btn-primary:hover {
+        background: #1d4ed8;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .usuarios-summary {
+        background: linear-gradient(135deg, #172554, #1e40af);
+        color: white;
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 16px rgba(23, 37, 84, .12);
+    }
+
+    .usuarios-summary-label {
+        color: #bfdbfe;
+        font-size: .9rem;
+        margin-bottom: 8px;
+    }
+
+    .usuarios-summary-number {
+        font-size: 2rem;
+        font-weight: 750;
+        margin: 0;
+    }
+
+    .usuarios-summary-description {
+        color: #dbeafe;
+        font-size: .85rem;
+        margin-top: 5px;
+    }
+
+    .usuarios-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, .05);
+    }
+
+    .usuarios-card-header {
+        padding: 20px 23px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .usuarios-card-header h5 {
+        color: #172554;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .usuarios-table {
+        margin-bottom: 0;
+    }
+
+    .usuarios-table thead th {
+        background: #172554;
+        color: white;
+        font-size: .83rem;
+        font-weight: 600;
+        padding: 15px 17px;
+        border: none;
+        white-space: nowrap;
+    }
+
+    .usuarios-table tbody td {
+        padding: 15px 17px;
+        vertical-align: middle;
+        color: #334155;
+        border-color: #edf2f7;
+    }
+
+    .usuarios-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .usuario-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 750;
+        margin-right: 10px;
+        flex-shrink: 0;
+    }
+
+    .usuario-nombre {
+        color: #172554;
+        font-weight: 650;
+    }
+
+    .usuario-email {
+        color: #475569;
+    }
+
+    .usuario-id {
+        display: inline-block;
+        max-width: 180px;
+        overflow-wrap: anywhere;
+        color: #64748b;
+        font-size: .78rem;
+        background: #f1f5f9;
+        padding: 5px 8px;
+        border-radius: 6px;
+    }
+
+    .usuarios-btn-edit {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+        border-radius: 7px;
+        padding: 7px 12px;
+        font-size: .85rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: .2s;
+        white-space: nowrap;
+    }
+
+    .usuarios-btn-edit:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+    }
+
+    .usuarios-empty {
+        text-align: center;
+        padding: 45px 20px;
+    }
+
+    .usuarios-empty-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .usuarios-empty h5 {
+        color: #172554;
+        font-weight: 700;
+    }
+
+    .usuarios-empty p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    .usuarios-back {
+        display: inline-block;
+        margin-top: 22px;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 9px 15px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+    .usuarios-back:hover {
+        background: #f1f5f9;
+        color: #172554;
+    }
+
+    @@media (max-width: 768px) {
+        .usuarios-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .usuarios-btn-primary {
+            width: 100%;
+            text-align: center;
+        }
+
+        .usuarios-card-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="container usuarios-page">
+
+    <!-- Encabezado -->
+    <div class="usuarios-header">
+        <div>
+            <h2>Gestión de usuarios</h2>
+            <p>
+                Administra las cuentas registradas en el sistema MotoFix.
+            </p>
+        </div>
+
+        <a asp-controller="Users"
+           asp-action="Create"
+           class="usuarios-btn-primary">
+            + Crear usuario
+        </a>
+    </div>
+
+    <!-- Resumen -->
+    <div class="usuarios-summary">
+        <div class="usuarios-summary-label">
+            Cuentas registradas
+        </div>
+
+        <p class="usuarios-summary-number">
+            @totalUsuarios
+        </p>
+
+        <div class="usuarios-summary-description">
+            Total de usuarios registrados en MotoFix
+        </div>
+    </div>
+
+    <!-- Tabla de usuarios -->
+    <div class="usuarios-card">
+
+        <div class="usuarios-card-header">
+            <div>
+                <h5>Usuarios del sistema</h5>
+                <small class="text-muted">
+                    Consulta y administra las cuentas registradas.
+                </small>
+            </div>
+
+            <span class="badge rounded-pill bg-primary">
+                @totalUsuarios usuarios
+            </span>
+        </div>
+
+        @if (!usuarios.Any())
+        {
+            <div class="usuarios-empty">
+                <div class="usuarios-empty-icon">👤</div>
+
+                <h5>No hay usuarios registrados</h5>
+
+                <p>
+                    Todavía no existen cuentas registradas en MotoFix.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table usuarios-table table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Correo electrónico</th>
+                            <th>Identificador</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var user in usuarios)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="usuario-avatar">
+                                            @(
+                                                !string.IsNullOrWhiteSpace(user.Nombre)
+                                                    ? user.Nombre.Substring(0, 1).ToUpper()
+                                                    : "U"
+                                            )
+                                        </div>
+
+                                        <div>
+                                            <div class="usuario-nombre">
+                                                @user.Nombre @user.Apellido
+                                            </div>
+
+                                            <small class="text-muted">
+                                                Cuenta de usuario
+                                            </small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="usuario-email">
+                                        @user.Email
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="usuario-id">
+                                        @user.Id
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    <a asp-controller="Users"
+                                       asp-action="Edit"
+                                       asp-route-id="@user.Id"
+                                       class="usuarios-btn-edit">
+                                        Editar
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        }
+    </div>
+
+    <!-- Regresar -->
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="usuarios-back">
+        ← Volver al inicio
+    </a>
+
+</div>

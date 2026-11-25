@@ -1,62 +1,221 @@
+
 @model MotoFix.Models.Cliente
 
 @{
     ViewData["Title"] = "Editar Cliente";
 }
 
-<div class="container mt-4">
-    <h1>Editar Cliente</h1>
+<style>
+    .form-page {
+        max-width: 1000px;
+        margin: 35px auto;
+    }
 
-    <hr />
+    .form-header {
+        margin-bottom: 25px;
+    }
 
-    <div class="row">
-        <div class="col-md-6">
-            <form asp-action="Edit" method="post">
+    .form-header h1 {
+        color: #172554;
+        font-weight: 750;
+        margin-bottom: 8px;
+    }
 
-                <input type="hidden" asp-for="Id" />
+    .form-header p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
 
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    .form-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 32px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+    }
 
-                <div class="mb-3">
-                    <label asp-for="Nombre" class="form-label"></label>
-                    <input asp-for="Nombre" class="form-control" />
-                    <span asp-validation-for="Nombre" class="text-danger"></span>
+    .form-section-title {
+        color: #1e3a8a;
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 22px;
+    }
+
+    .form-label {
+        color: #334155;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        padding: 11px 13px;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 24px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-save {
+        background: #1d4ed8;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 22px;
+        font-weight: 600;
+    }
+
+    .btn-save:hover {
+        background: #1e40af;
+        color: white;
+    }
+
+    .btn-cancel {
+        background: #f1f5f9;
+        color: #334155;
+        border-radius: 9px;
+        padding: 11px 22px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    .validation-summary-errors {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 9px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+    }
+
+    .validation-summary-errors ul {
+        margin-bottom: 0;
+    }
+
+    .field-validation-error {
+        display: block;
+        margin-top: 5px;
+        font-size: 0.875rem;
+    }
+
+    @@media (max-width: 576px) {
+        .form-card {
+            padding: 22px 18px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .form-actions .btn,
+        .form-actions a {
+            text-align: center;
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container form-page">
+
+    <div class="form-header">
+        <h1>Editar información del cliente</h1>
+        <p>Modifica los datos personales y de contacto del cliente registrado.</p>
+    </div>
+
+    <div class="form-card">
+
+        <h5 class="form-section-title">
+            Información del cliente
+        </h5>
+
+        <form asp-action="Edit" method="post">
+
+            <input type="hidden" asp-for="Id" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Nombre" class="form-label">
+                        Nombre
+                    </label>
+                    <input asp-for="Nombre"
+                           class="form-control"
+                           placeholder="Ingrese el nombre" />
+                    <span asp-validation-for="Nombre" class="text-danger field-validation-error"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Apellido" class="form-label"></label>
-                    <input asp-for="Apellido" class="form-control" />
-                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Apellido" class="form-label">
+                        Apellido
+                    </label>
+                    <input asp-for="Apellido"
+                           class="form-control"
+                           placeholder="Ingrese el apellido" />
+                    <span asp-validation-for="Apellido" class="text-danger field-validation-error"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Documento" class="form-label"></label>
-                    <input asp-for="Documento" class="form-control" />
-                    <span asp-validation-for="Documento" class="text-danger"></span>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Documento" class="form-label">
+                        Documento de identidad
+                    </label>
+                    <input asp-for="Documento"
+                           class="form-control"
+                           placeholder="Número de documento" />
+                    <span asp-validation-for="Documento" class="text-danger field-validation-error"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Telefono" class="form-label"></label>
-                    <input asp-for="Telefono" class="form-control" />
-                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Telefono" class="form-label">
+                        Teléfono
+                    </label>
+                    <input asp-for="Telefono"
+                           class="form-control"
+                           type="tel"
+                           placeholder="Número de contacto" />
+                    <span asp-validation-for="Telefono" class="text-danger field-validation-error"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Correo" class="form-label"></label>
-                    <input asp-for="Correo" class="form-control" type="email" />
-                    <span asp-validation-for="Correo" class="text-danger"></span>
+                <div class="col-12 mb-3">
+                    <label asp-for="Correo" class="form-label">
+                        Correo electrónico
+                    </label>
+                    <input asp-for="Correo"
+                           class="form-control"
+                           type="email"
+                           placeholder="ejemplo@correo.com" />
+                    <span asp-validation-for="Correo" class="text-danger field-validation-error"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary">
-                    Guardar Cambios
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-save">
+                    Guardar cambios
                 </button>
 
-                <a asp-action="Index" class="btn btn-secondary">
+                <a asp-action="Index" class="btn btn-cancel">
                     Cancelar
                 </a>
+            </div>
 
-            </form>
-        </div>
+        </form>
     </div>
 </div>
 

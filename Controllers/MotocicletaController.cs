@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using MotoFix.Models;
 using MotoFix.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MotoFix.Controllers
 {
+    [Authorize]
     public class MotocicletaController : Controller
     {
         private readonly IMotocicletaService _motocicletaService;
@@ -17,6 +19,7 @@ namespace MotoFix.Controllers
             _clienteService = clienteService;
         }
         // GET: Motocicleta
+        [Authorize(Policy = "Motocicletas.Ver")]
         public async Task<IActionResult> Index()
         {
             var motocicletas = await _motocicletaService.ObtenerTodasAsync();
@@ -24,20 +27,20 @@ namespace MotoFix.Controllers
         }
 
         // GET: Motocicleta/Details/5
+        [Authorize(Policy = "Motocicletas.Ver")]
         public async Task<IActionResult> Details(int id)
         {
             var motocicleta = await _motocicletaService.ObtenerPorIdAsync(id);
 
             if (motocicleta == null)
-            {
                 return NotFound();
-            }
 
             return View(motocicleta);
         }
 
                 // GET: Motocicleta/Create
-            // GET: Motocicleta/Create
+        [Authorize(Policy = "Motocicletas.Crear")]
+        [HttpGet]
         public async Task<IActionResult> Create()
         {
             var clientes = await _clienteService.ObtenerTodosAsync();
@@ -46,10 +49,11 @@ namespace MotoFix.Controllers
 
             return View();
         }
-
         // POST: Motocicleta/Create
+        [Authorize(Policy = "Motocicletas.Crear")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Create(Motocicleta motocicleta)
         {
             if (!ModelState.IsValid)
@@ -67,6 +71,7 @@ namespace MotoFix.Controllers
 
         // GET: Motocicleta/Edit/5
 // GET: Motocicleta/Edit/5
+        [Authorize(Policy = "Motocicletas.Editar")]
         public async Task<IActionResult> Edit(int id)
         {
             var motocicleta = await _motocicletaService.ObtenerPorIdAsync(id);
@@ -83,6 +88,7 @@ namespace MotoFix.Controllers
         }
 
         // POST: Motocicleta/Edit/5
+        [Authorize(Policy = "Motocicletas.Editar")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Motocicleta motocicleta)
@@ -105,6 +111,7 @@ namespace MotoFix.Controllers
             return RedirectToAction(nameof(Index));
         }
         // GET: Motocicleta/Delete/5
+        [Authorize(Policy = "Motocicletas.Eliminar")]
         public async Task<IActionResult> Delete(int id)
         {
             var motocicleta = await _motocicletaService.ObtenerPorIdAsync(id);
@@ -118,6 +125,7 @@ namespace MotoFix.Controllers
         }
 
         // POST: Motocicleta/Delete/5
+        [Authorize(Policy = "Motocicletas.Eliminar")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
