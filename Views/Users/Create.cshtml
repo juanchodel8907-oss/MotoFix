@@ -5,71 +5,290 @@
     ViewData["Title"] = "Crear usuario";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-7">
+<style>
+    .user-form-page {
+        padding-top: 30px;
+        padding-bottom: 40px;
+    }
 
-            <div class="card shadow">
-                <div class="card-header">
-                    <h3 class="mb-0">Registrar usuario</h3>
+    .user-form-header {
+        margin-bottom: 25px;
+    }
+
+    .user-form-header h2 {
+        color: #172554;
+        font-weight: 750;
+        margin-bottom: 6px;
+    }
+
+    .user-form-header p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    .user-form-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .06);
+    }
+
+    .user-form-card-header {
+        background: linear-gradient(135deg, #172554, #1e40af);
+        color: white;
+        padding: 23px 27px;
+    }
+
+    .user-form-card-header h4 {
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .user-form-card-header p {
+        color: #bfdbfe;
+        margin: 0;
+        font-size: .9rem;
+    }
+
+    .user-form-card-body {
+        padding: 28px;
+    }
+
+    .user-form-section-title {
+        color: #172554;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .user-form-label {
+        color: #334155;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .user-form-control {
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 11px 13px;
+        color: #1e293b;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+    .user-form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, .13);
+    }
+
+    .user-form-help {
+        display: block;
+        margin-top: 7px;
+        color: #64748b;
+        font-size: .82rem;
+        line-height: 1.5;
+    }
+
+    .user-password-info {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 9px;
+        padding: 12px 14px;
+        color: #1e40af;
+        font-size: .85rem;
+        margin-top: 10px;
+    }
+
+    .user-role-info {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        padding: 13px 15px;
+        margin-top: 12px;
+        color: #475569;
+        font-size: .85rem;
+    }
+
+    .user-form-submit {
+        background: #2563eb;
+        border: none;
+        border-radius: 9px;
+        color: white;
+        padding: 12px 20px;
+        font-weight: 650;
+        transition: background .2s, transform .2s;
+    }
+
+    .user-form-submit:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    .user-form-cancel {
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
+        color: #475569;
+        background: white;
+        padding: 12px 20px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background .2s;
+    }
+
+    .user-form-cancel:hover {
+        background: #f1f5f9;
+        color: #172554;
+    }
+
+    @@media (max-width: 576px) {
+        .user-form-card-body {
+            padding: 20px;
+        }
+
+        .user-form-actions {
+            flex-direction: column;
+        }
+
+        .user-form-actions button,
+        .user-form-actions a {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="container user-form-page">
+
+    <!-- Encabezado -->
+    <div class="user-form-header">
+        <h2>Crear usuario</h2>
+        <p>
+            Registra una nueva cuenta y asigna sus permisos iniciales mediante un rol.
+        </p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+
+            <div class="user-form-card">
+
+                <!-- Cabecera de la tarjeta -->
+                <div class="user-form-card-header">
+                    <h4>Registro de usuario</h4>
+                    <p>Completa la información para crear una nueva cuenta en MotoFix.</p>
                 </div>
 
-                <div class="card-body">
+                <div class="user-form-card-body">
 
                     <form asp-controller="Users"
                           asp-action="Create"
                           method="post">
 
                         <div asp-validation-summary="ModelOnly"
-                             class="text-danger mb-3"></div>
+                             class="alert alert-danger"
+                             role="alert"></div>
 
-                        <div class="mb-3">
-                            <label asp-for="Nombre" class="form-label"></label>
-                            <input asp-for="Nombre"
-                                   class="form-control"
-                                   placeholder="Nombre del usuario" />
-                            <span asp-validation-for="Nombre"
-                                  class="text-danger"></span>
+                        <!-- Información personal -->
+                        <h5 class="user-form-section-title">
+                            Información personal
+                        </h5>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Nombre"
+                                       class="form-label user-form-label">
+                                </label>
+
+                                <input asp-for="Nombre"
+                                       class="form-control user-form-control"
+                                       placeholder="Nombre del usuario" />
+
+                                <span asp-validation-for="Nombre"
+                                      class="text-danger small">
+                                </span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Apellido"
+                                       class="form-label user-form-label">
+                                </label>
+
+                                <input asp-for="Apellido"
+                                       class="form-control user-form-control"
+                                       placeholder="Apellido del usuario" />
+
+                                <span asp-validation-for="Apellido"
+                                      class="text-danger small">
+                                </span>
+                            </div>
+
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Apellido" class="form-label"></label>
-                            <input asp-for="Apellido"
-                                   class="form-control"
-                                   placeholder="Apellido del usuario" />
-                            <span asp-validation-for="Apellido"
-                                  class="text-danger"></span>
-                        </div>
+                        <div class="mb-4">
+                            <label asp-for="Email"
+                                   class="form-label user-form-label">
+                            </label>
 
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label"></label>
                             <input asp-for="Email"
-                                   class="form-control"
+                                   class="form-control user-form-control"
                                    placeholder="correo@ejemplo.com" />
-                            <span asp-validation-for="Email"
-                                  class="text-danger"></span>
-                        </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Password"
-                                   class="form-label"></label>
-                            <input asp-for="Password"
-                                   class="form-control"
-                                   placeholder="Contraseña segura" />
-                            <span asp-validation-for="Password"
-                                  class="text-danger"></span>
-                            <small class="text-muted">
-                                Mínimo 8 caracteres, incluyendo mayúscula,
-                                minúscula, número y carácter especial.
+                            <span asp-validation-for="Email"
+                                  class="text-danger small">
+                            </span>
+
+                            <small class="user-form-help">
+                                Ingresa una dirección de correo electrónico válida.
                             </small>
                         </div>
 
-                        <div class="mb-3">
+                        <!-- Seguridad -->
+                        <h5 class="user-form-section-title">
+                            Seguridad de la cuenta
+                        </h5>
+
+                        <div class="mb-4">
+                            <label asp-for="Password"
+                                   class="form-label user-form-label">
+                            </label>
+
+                            <input asp-for="Password"
+                                   class="form-control user-form-control"
+                                   placeholder="Ingresa una contraseña segura" />
+
+                            <span asp-validation-for="Password"
+                                  class="text-danger small">
+                            </span>
+
+                            <div class="user-password-info">
+                                <strong>Requisitos de contraseña</strong>
+                                <ul class="mb-0 mt-2 ps-3">
+                                    <li>Mínimo 8 caracteres.</li>
+                                    <li>Al menos una letra mayúscula.</li>
+                                    <li>Al menos una letra minúscula.</li>
+                                    <li>Al menos un número.</li>
+                                    <li>Al menos un carácter especial.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Asignación de rol -->
+                        <h5 class="user-form-section-title">
+                            Asignación de rol
+                        </h5>
+
+                        <div class="mb-4">
                             <label asp-for="RoleName"
-                                   class="form-label">Rol del usuario</label>
+                                   class="form-label user-form-label">
+                                Rol del usuario
+                            </label>
 
                             <select asp-for="RoleName"
-                                    class="form-select">
+                                    class="form-select user-form-control">
+
                                 <option value="">
                                     Selecciona un rol
                                 </option>
@@ -78,26 +297,37 @@
                                 {
                                     <option value="@role">@role</option>
                                 }
+
                             </select>
 
                             <span asp-validation-for="RoleName"
-                                  class="text-danger"></span>
+                                  class="text-danger small">
+                            </span>
+
+                            <div class="user-role-info">
+                                <strong>Importante:</strong>
+                                el rol asignado determina los permisos y las
+                                funcionalidades a las que podrá acceder el usuario.
+                            </div>
                         </div>
 
-                        <button type="submit"
-                                class="btn btn-primary w-100">
-                            Registrar usuario
-                        </button>
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between gap-3 user-form-actions">
+
+                            <a asp-controller="Users"
+                               asp-action="Index"
+                               class="user-form-cancel">
+                                ← Volver a usuarios
+                            </a>
+
+                            <button type="submit"
+                                    class="user-form-submit">
+                                + Registrar usuario
+                            </button>
+
+                        </div>
 
                     </form>
-
-                    <div class="mt-3">
-                        <a asp-controller="Users"
-                           asp-action="Index"
-                           class="btn btn-outline-secondary w-100">
-                            Volver a usuarios
-                        </a>
-                    </div>
 
                 </div>
             </div>

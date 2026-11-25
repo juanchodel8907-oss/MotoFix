@@ -3,89 +3,365 @@
 
 @{
     ViewData["Title"] = "Gestión de roles";
+
+    var roles = Model.ToList();
+    var totalRoles = roles.Count;
 }
 
-<div class="container mt-4">
+<style>
+    .roles-page {
+        padding-top: 28px;
+        padding-bottom: 35px;
+    }
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    .roles-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .roles-header h2 {
+        color: #172554;
+        font-weight: 750;
+        margin-bottom: 6px;
+    }
+
+    .roles-header p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    .roles-btn-primary {
+        background: #2563eb;
+        border: none;
+        color: white;
+        padding: 11px 18px;
+        border-radius: 9px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background .2s, transform .2s;
+        white-space: nowrap;
+    }
+
+    .roles-btn-primary:hover {
+        background: #1d4ed8;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .roles-summary {
+        background: linear-gradient(135deg, #172554, #1e40af);
+        color: white;
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 16px rgba(23, 37, 84, .12);
+    }
+
+    .roles-summary-label {
+        color: #bfdbfe;
+        font-size: .9rem;
+        margin-bottom: 8px;
+    }
+
+    .roles-summary-number {
+        font-size: 2rem;
+        font-weight: 750;
+        margin: 0;
+    }
+
+    .roles-summary-description {
+        color: #dbeafe;
+        font-size: .85rem;
+        margin-top: 5px;
+    }
+
+    .roles-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, .05);
+    }
+
+    .roles-card-header {
+        padding: 20px 23px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .roles-card-header h5 {
+        color: #172554;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .roles-table {
+        margin-bottom: 0;
+    }
+
+    .roles-table thead th {
+        background: #172554;
+        color: white;
+        font-size: .83rem;
+        font-weight: 600;
+        padding: 15px 17px;
+        border: none;
+        white-space: nowrap;
+    }
+
+    .roles-table tbody td {
+        padding: 16px 17px;
+        vertical-align: middle;
+        color: #334155;
+        border-color: #edf2f7;
+    }
+
+    .roles-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .role-icon {
+        width: 39px;
+        height: 39px;
+        border-radius: 10px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        margin-right: 11px;
+        flex-shrink: 0;
+    }
+
+    .role-name {
+        color: #172554;
+        font-weight: 650;
+    }
+
+    .role-description {
+        color: #64748b;
+        font-size: .82rem;
+    }
+
+    .role-id {
+        display: inline-block;
+        max-width: 190px;
+        overflow-wrap: anywhere;
+        color: #64748b;
+        font-size: .78rem;
+        background: #f1f5f9;
+        padding: 5px 8px;
+        border-radius: 6px;
+    }
+
+    .roles-btn-edit {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+        border-radius: 7px;
+        padding: 7px 12px;
+        font-size: .85rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: .2s;
+        white-space: nowrap;
+    }
+
+    .roles-btn-edit:hover {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+    }
+
+    .roles-empty {
+        text-align: center;
+        padding: 45px 20px;
+    }
+
+    .roles-empty-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .roles-empty h5 {
+        color: #172554;
+        font-weight: 700;
+    }
+
+    .roles-empty p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+
+    .roles-back {
+        display: inline-block;
+        margin-top: 22px;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        padding: 9px 15px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: .2s;
+    }
+
+    .roles-back:hover {
+        background: #f1f5f9;
+        color: #172554;
+    }
+
+    @@media (max-width: 768px) {
+        .roles-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .roles-btn-primary {
+            width: 100%;
+            text-align: center;
+        }
+
+        .roles-card-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="container roles-page">
+
+    <!-- Encabezado -->
+    <div class="roles-header">
         <div>
             <h2>Gestión de roles</h2>
-            <p class="text-muted mb-0">
-                Administración de roles y permisos de MotoFix.
+            <p>
+                Administra los roles y niveles de acceso de MotoFix.
             </p>
         </div>
 
         <a asp-controller="Roles"
            asp-action="Create"
-           class="btn btn-primary">
+           class="roles-btn-primary">
             + Crear rol
         </a>
     </div>
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
+    <!-- Resumen -->
+    <div class="roles-summary">
+        <div class="roles-summary-label">
+            Roles configurados
         </div>
-    }
 
-    <div class="card shadow">
-        <div class="card-body">
+        <p class="roles-summary-number">
+            @totalRoles
+        </p>
 
-            @if (!Model.Any())
-            {
-                <div class="alert alert-info mb-0">
-                    No hay roles registrados.
-                </div>
-            }
-            else
-            {
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle">
-                        <thead class="table-dark">
+        <div class="roles-summary-description">
+            Total de roles registrados en el sistema
+        </div>
+    </div>
+
+    <!-- Listado -->
+    <div class="roles-card">
+
+        <div class="roles-card-header">
+            <div>
+                <h5>Roles del sistema</h5>
+                <small class="text-muted">
+                    Consulta y administra los niveles de acceso.
+                </small>
+            </div>
+
+            <span class="badge rounded-pill bg-primary">
+                @totalRoles roles
+            </span>
+        </div>
+
+        @if (!roles.Any())
+        {
+            <div class="roles-empty">
+                <div class="roles-empty-icon">🛡️</div>
+
+                <h5>No hay roles registrados</h5>
+
+                <p>
+                    Todavía no existen roles configurados en MotoFix.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table roles-table table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Nombre del rol</th>
+                            <th>Identificador</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var role in roles)
+                        {
                             <tr>
-                                <th>Nombre del rol</th>
-                                <th>Identificador</th>
-                                <th>Acciones</th>
+                                <td>
+                                    <div class="d-flex align-items-center">
+
+                                        <div class="role-icon">
+                                            🛡️
+                                        </div>
+
+                                        <div>
+                                            <div class="role-name">
+                                                @role.Name
+                                            </div>
+
+                                            <div class="role-description">
+                                                Rol de acceso del sistema
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="role-id">
+                                        @role.Id
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    <a asp-controller="Roles"
+                                       asp-action="Edit"
+                                       asp-route-id="@role.Id"
+                                       class="roles-btn-edit">
+                                        Editar
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
+                        }
+                    </tbody>
 
-                        <tbody>
-                            @foreach (var role in Model)
-                            {
-                                <tr>
-                                    <td>@role.Name</td>
+                </table>
+            </div>
+        }
 
-                                    <td>
-                                        <small class="text-muted">
-                                            @role.Id
-                                        </small>
-                                    </td>
-
-                                    <td>
-                                        <a asp-controller="Roles"
-                                           asp-action="Edit"
-                                           asp-route-id="@role.Id"
-                                           class="btn btn-sm btn-warning">
-                                            Editar
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            }
-
-        </div>
     </div>
 
-    <div class="mt-3">
-        <a asp-controller="Home"
-           asp-action="Index"
-           class="btn btn-outline-secondary">
-            Volver al inicio
-        </a>
-    </div>
+    <!-- Regresar -->
+    <a asp-controller="Home"
+       asp-action="Index"
+       class="roles-back">
+        ← Volver al inicio
+    </a>
 
 </div>

@@ -1,8 +1,318 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@{
+    ViewData["Title"] = "Inicio | MotoFix";
+
+    bool autenticado = User.Identity?.IsAuthenticated ?? false;
+
+    bool puedeVerClientes = false;
+    bool puedeCrearClientes = false;
+    bool puedeVerMotocicletas = false;
+    bool puedeCrearMotocicletas = false;
+
+    if (autenticado)
+    {
+        puedeVerClientes = (await AuthorizationService.AuthorizeAsync(
+            User, null, "Clientes.Ver")).Succeeded;
+
+        puedeCrearClientes = (await AuthorizationService.AuthorizeAsync(
+            User, null, "Clientes.Crear")).Succeeded;
+
+        puedeVerMotocicletas = (await AuthorizationService.AuthorizeAsync(
+            User, null, "Motocicletas.Ver")).Succeeded;
+
+        puedeCrearMotocicletas = (await AuthorizationService.AuthorizeAsync(
+            User, null, "Motocicletas.Crear")).Succeeded;
+    }
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .motofix-home {
+        padding: 25px 0 45px;
+    }
+
+    .welcome-panel {
+        position: relative;
+        overflow: hidden;
+        padding: 48px;
+        border-radius: 20px;
+        background: linear-gradient(120deg, #101d35, #173b70);
+        color: white;
+        box-shadow: 0 12px 30px rgba(15, 35, 65, 0.16);
+    }
+
+    .welcome-panel::after {
+        content: "M";
+        position: absolute;
+        right: 35px;
+        bottom: -105px;
+        font-size: 300px;
+        font-weight: 900;
+        line-height: 1;
+        color: rgba(255,255,255,0.045);
+        pointer-events: none;
+    }
+
+    .welcome-content {
+        position: relative;
+        z-index: 1;
+        max-width: 650px;
+    }
+
+    .welcome-tag {
+        display: inline-block;
+        padding: 7px 13px;
+        margin-bottom: 18px;
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 30px;
+        color: #c8ddff;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+    }
+
+    .welcome-title {
+        font-size: clamp(30px, 4vw, 43px);
+        font-weight: 800;
+        margin-bottom: 15px;
+    }
+
+    .welcome-description {
+        color: #d4e1f4;
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    .section-heading {
+        color: #172b4d;
+        font-weight: 750;
+        margin-bottom: 8px;
+    }
+
+    .section-description {
+        color: #718096;
+        margin-bottom: 25px;
+    }
+
+    .module-card {
+        height: 100%;
+        padding: 25px;
+        border: 1px solid #e8edf4;
+        border-radius: 16px;
+        background: white;
+        box-shadow: 0 5px 18px rgba(20, 40, 70, 0.045);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .module-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(20, 40, 70, 0.09);
+    }
+
+    .module-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        margin-bottom: 20px;
+        border-radius: 14px;
+        background: #eaf2ff;
+        color: #1765c1;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .module-title {
+        color: #1b2d49;
+        font-size: 19px;
+        font-weight: 750;
+        margin-bottom: 10px;
+    }
+
+    .module-description {
+        color: #718096;
+        font-size: 14px;
+        line-height: 1.6;
+        min-height: 45px;
+    }
+
+    .module-link {
+        display: inline-block;
+        margin-top: 15px;
+        color: #1765c1;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .module-link:hover {
+        color: #104b91;
+        text-decoration: underline;
+    }
+
+    .home-footer {
+        margin-top: 35px;
+        padding-top: 20px;
+        border-top: 1px solid #e8edf4;
+        color: #8793a5;
+        font-size: 13px;
+    }
+
+    @@media (max-width: 768px) {
+        .welcome-panel {
+            padding: 32px 25px;
+        }
+
+        .welcome-panel::after {
+            right: -20px;
+            font-size: 200px;
+        }
+    }
+</style>
+
+<div class="container motofix-home">
+
+    <section class="welcome-panel mb-5">
+        <div class="welcome-content">
+
+            <span class="welcome-tag">SISTEMA DE GESTIÓN</span>
+
+            @if (autenticado)
+            {
+                <h1 class="welcome-title">
+                    ¡Bienvenido a MotoFix!
+                </h1>
+
+                <p class="welcome-description">
+                    Hola, <strong>@User.Identity?.Name</strong>.
+                    Nos alegra tenerte de vuelta.
+                    Desde aquí puedes acceder a las herramientas
+                    de gestión disponibles para tu cuenta.
+                </p>
+            }
+            else
+            {
+                <h1 class="welcome-title">
+                    Bienvenido a MotoFix
+                </h1>
+
+                <p class="welcome-description">
+                    Una plataforma diseñada para facilitar la
+                    administración y el control de las operaciones
+                    de un taller especializado en motocicletas.
+                </p>
+
+                <a asp-controller="Account"
+                   asp-action="Login"
+                   class="btn btn-light fw-bold px-4 py-2">
+                    Iniciar sesión
+                </a>
+            }
+
+        </div>
+    </section>
+
+    @if (autenticado)
+    {
+        <section>
+            <h2 class="section-heading">Panel de gestión</h2>
+
+            <p class="section-description">
+                Selecciona uno de los módulos disponibles para comenzar.
+            </p>
+
+            <div class="row g-4">
+
+                @if (puedeVerClientes)
+                {
+                    <div class="col-md-6">
+                        <div class="module-card">
+                            <div class="module-icon">CL</div>
+
+                            <h3 class="module-title">
+                                Gestión de clientes
+                            </h3>
+
+                            <p class="module-description">
+                                Consulta y administra la información
+                                de los clientes registrados en el sistema.
+                            </p>
+
+                            <a asp-controller="Cliente"
+                               asp-action="Index"
+                               class="module-link">
+                                Acceder al módulo →
+                            </a>
+
+                            @if (puedeCrearClientes)
+                            {
+                                <div class="mt-2">
+                                    <a asp-controller="Cliente"
+                                       asp-action="Create"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Registrar cliente
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @if (puedeVerMotocicletas)
+                {
+                    <div class="col-md-6">
+                        <div class="module-card">
+                            <div class="module-icon">MT</div>
+
+                            <h3 class="module-title">
+                                Gestión de motocicletas
+                            </h3>
+
+                            <p class="module-description">
+                                Administra las motocicletas registradas
+                                y consulta su información asociada.
+                            </p>
+
+                            <a asp-controller="Motocicleta"
+                               asp-action="Index"
+                               class="module-link">
+                                Acceder al módulo →
+                            </a>
+
+                            @if (puedeCrearMotocicletas)
+                            {
+                                <div class="mt-2">
+                                    <a asp-controller="Motocicleta"
+                                       asp-action="Create"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Registrar motocicleta
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+            </div>
+
+            @if (!puedeVerClientes && !puedeVerMotocicletas)
+            {
+                <div class="alert alert-info">
+                    No tienes módulos de gestión disponibles.
+                    Consulta con el administrador del sistema.
+                </div>
+            }
+        </section>
+    }
+
+    <footer class="home-footer text-center">
+        <strong>MotoFix</strong> · Sistema de gestión de talleres
+        de motocicletas.
+        <br />
+        <span>Gestión eficiente, organizada y segura.</span>
+    </footer>
+
 </div>

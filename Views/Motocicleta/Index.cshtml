@@ -1,74 +1,402 @@
+
 @model IEnumerable<MotoFix.Models.Motocicleta>
 
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
 @{
-    ViewData["Title"] = "Motocicletas";
+    ViewData["Title"] = "Gestión de motocicletas";
+
+    bool puedeVer = (await AuthorizationService.AuthorizeAsync(
+        User, null, "Motocicletas.Ver")).Succeeded;
+
+    bool puedeCrear = (await AuthorizationService.AuthorizeAsync(
+        User, null, "Motocicletas.Crear")).Succeeded;
+
+    bool puedeEditar = (await AuthorizationService.AuthorizeAsync(
+        User, null, "Motocicletas.Editar")).Succeeded;
+
+    bool puedeEliminar = (await AuthorizationService.AuthorizeAsync(
+        User, null, "Motocicletas.Eliminar")).Succeeded;
+
+    int totalMotocicletas = Model.Count();
+    int totalMarcas = Model
+        .Where(m => !string.IsNullOrWhiteSpace(m.Marca))
+        .Select(m => m.Marca.Trim().ToLower())
+        .Distinct()
+        .Count();
+
+    int totalCilindraje = Model.Sum(m => m.Cilindraje);
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Motocicletas</h1>
+<style>
+    .motocicletas-page {
+        padding: 20px 0 40px;
+    }
 
-        <a asp-action="Create" class="btn btn-primary">
-            Nueva Motocicleta
-        </a>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .page-title {
+        color: #172b4d;
+        font-size: 30px;
+        font-weight: 800;
+        margin-bottom: 7px;
+    }
+
+    .page-subtitle {
+        color: #718096;
+        margin-bottom: 0;
+    }
+
+    .btn-motofix {
+        background: #1765c1;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 18px;
+        font-weight: 650;
+        text-decoration: none;
+        transition: background 0.2s ease;
+    }
+
+    .btn-motofix:hover {
+        background: #104b91;
+        color: white;
+    }
+
+    .summary-card {
+        background: white;
+        border: 1px solid #e8edf4;
+        border-radius: 13px;
+        padding: 19px 22px;
+        height: 100%;
+        box-shadow: 0 4px 14px rgba(20, 40, 70, 0.035);
+    }
+
+    .summary-label {
+        color: #718096;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 7px;
+    }
+
+    .summary-value {
+        color: #173b70;
+        font-size: 27px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .table-panel {
+        background: white;
+        border: 1px solid #e8edf4;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 5px 18px rgba(20, 40, 70, 0.045);
+    }
+
+    .table-panel-header {
+        padding: 20px 22px;
+        border-bottom: 1px solid #e8edf4;
+    }
+
+    .table-panel-title {
+        color: #1b2d49;
+        font-size: 18px;
+        font-weight: 750;
+        margin: 0;
+    }
+
+    .motocicletas-table {
+        margin-bottom: 0;
+        vertical-align: middle;
+    }
+
+    .motocicletas-table thead th {
+        background: #f3f6fb;
+        color: #53647c;
+        font-size: 12px;
+        font-weight: 750;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 15px 16px;
+        border-bottom: 1px solid #e5ebf3;
+        white-space: nowrap;
+    }
+
+    .motocicletas-table tbody td {
+        color: #46566d;
+        font-size: 14px;
+        padding: 16px;
+        border-bottom: 1px solid #edf1f6;
+    }
+
+    .motocicletas-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .motocicletas-table tbody tr:hover {
+        background: #f8faff;
+    }
+
+    .plate-badge {
+        display: inline-block;
+        padding: 6px 11px;
+        border: 1px solid #d5dfeb;
+        border-radius: 6px;
+        background: #f5f8fc;
+        color: #173b70;
+        font-weight: 800;
+        letter-spacing: 0.7px;
+    }
+
+    .motorcycle-name {
+        color: #1b2d49;
+        font-weight: 700;
+    }
+
+    .displacement-badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background: #eaf2ff;
+        color: #1765c1;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .action-btn {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        margin: 2px;
+    }
+
+    .action-view {
+        color: #1765c1;
+        background: #eaf2ff;
+    }
+
+    .action-edit {
+        color: #95620c;
+        background: #fff3d6;
+    }
+
+    .action-delete {
+        color: #b42332;
+        background: #fdebed;
+    }
+
+    .action-btn:hover {
+        filter: brightness(0.95);
+    }
+
+    .empty-state {
+        padding: 55px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 38px;
+        margin-bottom: 14px;
+    }
+
+    .empty-title {
+        color: #1b2d49;
+        font-size: 19px;
+        font-weight: 750;
+    }
+
+    .empty-description {
+        color: #718096;
+        margin-bottom: 0;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .page-title {
+            font-size: 25px;
+        }
+    }
+</style>
+
+<div class="container motocicletas-page">
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Gestión de motocicletas</h1>
+
+            <p class="page-subtitle">
+                Consulta y administra las motocicletas registradas en MotoFix.
+            </p>
+        </div>
+
+        @if (puedeCrear)
+        {
+            <a asp-action="Create" class="btn-motofix">
+                + Nueva motocicleta
+            </a>
+        }
     </div>
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info">
-            No hay motocicletas registradas todavía.
-        </div>
-    }
-    else
-    {
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Placa</th>
-                        <th>Marca</th>
-                        <th>Modelo</th>
-                        <th>Cilindraje</th>
-                        <th>Propietario</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
+    <div class="row g-3 mb-4">
 
-                <tbody>
-                    @foreach (var motocicleta in Model)
-                    {
+        <div class="col-md-4">
+            <div class="summary-card">
+                <div class="summary-label">Motocicletas registradas</div>
+                <p class="summary-value">@totalMotocicletas</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="summary-card">
+                <div class="summary-label">Marcas registradas</div>
+                <p class="summary-value">@totalMarcas</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="summary-card">
+                <div class="summary-label">Cilindraje acumulado</div>
+                <p class="summary-value">@totalCilindraje cc</p>
+            </div>
+        </div>
+
+    </div>
+
+    <section class="table-panel">
+
+        <div class="table-panel-header">
+            <h2 class="table-panel-title">
+                Listado de motocicletas
+            </h2>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <div class="empty-icon">🏍️</div>
+
+                <h3 class="empty-title">
+                    No hay motocicletas registradas
+                </h3>
+
+                <p class="empty-description">
+                    Las motocicletas que registres aparecerán en este espacio.
+                </p>
+
+                @if (puedeCrear)
+                {
+                    <a asp-action="Create"
+                       class="btn-motofix d-inline-block mt-3">
+                        Registrar primera motocicleta
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+
+                <table class="table motocicletas-table">
+
+                    <thead>
                         <tr>
-                            <td>@motocicleta.Placa</td>
-                            <td>@motocicleta.Marca</td>
-                            <td>@motocicleta.Modelo</td>
-                            <td>@motocicleta.Cilindraje cc</td>
-                            <td>
-                                @motocicleta.Cliente?.Nombre
-                                @motocicleta.Cliente?.Apellido
-                            </td>
-                            <td>
-                                <a asp-action="Details"
-                                   asp-route-id="@motocicleta.Id"
-                                   class="btn btn-info btn-sm">
-                                    Ver
-                                </a>
+                            <th>Placa</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Cilindraje</th>
+                            <th>Propietario</th>
 
-                                <a asp-action="Edit"
-                                   asp-route-id="@motocicleta.Id"
-                                   class="btn btn-warning btn-sm">
-                                    Editar
-                                </a>
-
-                                <a asp-action="Delete"
-                                   asp-route-id="@motocicleta.Id"
-                                   class="btn btn-danger btn-sm">
-                                    Eliminar
-                                </a>
-                            </td>
+                            @if (puedeVer || puedeEditar || puedeEliminar)
+                            {
+                                <th>Acciones</th>
+                            }
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+                    </thead>
+
+                    <tbody>
+                        @foreach (var motocicleta in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="plate-badge">
+                                        @motocicleta.Placa
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="motorcycle-name">
+                                        @motocicleta.Marca
+                                    </span>
+                                </td>
+
+                                <td>@motocicleta.Modelo</td>
+
+                                <td>
+                                    <span class="displacement-badge">
+                                        @motocicleta.Cilindraje cc
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @motocicleta.Cliente?.Nombre
+                                    @motocicleta.Cliente?.Apellido
+                                </td>
+
+                                @if (puedeVer || puedeEditar || puedeEliminar)
+                                {
+                                    <td>
+                                        @if (puedeVer)
+                                        {
+                                            <a asp-action="Details"
+                                               asp-route-id="@motocicleta.Id"
+                                               class="action-btn action-view">
+                                                Ver
+                                            </a>
+                                        }
+
+                                        @if (puedeEditar)
+                                        {
+                                            <a asp-action="Edit"
+                                               asp-route-id="@motocicleta.Id"
+                                               class="action-btn action-edit">
+                                                Editar
+                                            </a>
+                                        }
+
+                                        @if (puedeEliminar)
+                                        {
+                                            <a asp-action="Delete"
+                                               asp-route-id="@motocicleta.Id"
+                                               class="action-btn action-delete">
+                                                Eliminar
+                                            </a>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+
+    </section>
+
 </div>

@@ -1,76 +1,343 @@
+
 @model MotoFix.Models.Cliente
+
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 @{
     ViewData["Title"] = "Detalles del Cliente";
+
+    var puedeEditar = (await AuthorizationService.AuthorizeAsync(
+        User, "Clientes.Editar")).Succeeded;
+
+    var motocicletas = Model.Motocicletas ?? new List<MotoFix.Models.Motocicleta>();
 }
 
-<div class="container mt-4">
-    <h1>Detalles del Cliente</h1>
+<style>
+    .details-page {
+        max-width: 1050px;
+        margin: 35px auto;
+    }
 
-    <hr />
+    .details-header {
+        margin-bottom: 25px;
+    }
 
-    <dl class="row">
-        <dt class="col-sm-3">
-            Nombre completo
-        </dt>
-        <dd class="col-sm-9">
-            @Model.Nombre @Model.Apellido
-        </dd>
+    .details-header h1 {
+        color: #172554;
+        font-weight: 750;
+        margin-bottom: 8px;
+    }
 
-        <dt class="col-sm-3">
-            Documento
-        </dt>
-        <dd class="col-sm-9">
-            @Model.Documento
-        </dd>
+    .details-header p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
 
-        <dt class="col-sm-3">
-            Teléfono
-        </dt>
-        <dd class="col-sm-9">
-            @Model.Telefono
-        </dd>
+    .details-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+        margin-bottom: 24px;
+    }
 
-        <dt class="col-sm-3">
-            Correo
-        </dt>
-        <dd class="col-sm-9">
-            @Model.Correo
-        </dd>
+    .client-profile {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 25px;
+    }
 
-        <dt class="col-sm-3">
-            Motocicletas registradas
-        </dt>
-        <dd class="col-sm-9">
-            @if (Model.Motocicletas.Any())
-            {
-                <ul>
-                    @foreach (var motocicleta in Model.Motocicletas)
-                    {
-                        <li>
-                            @motocicleta.Marca @motocicleta.Modelo
-                            - Placa: @motocicleta.Placa
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <span>No tiene motocicletas registradas.</span>
-            }
-        </dd>
-    </dl>
+    .client-avatar {
+        width: 65px;
+        height: 65px;
+        border-radius: 16px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.7rem;
+        font-weight: 750;
+        flex-shrink: 0;
+    }
 
-    <div class="mt-3">
-        <a asp-action="Edit"
-           asp-route-id="@Model.Id"
-           class="btn btn-warning">
-            Editar
-        </a>
+    .client-name {
+        color: #172554;
+        font-size: 1.4rem;
+        font-weight: 750;
+        margin-bottom: 5px;
+    }
 
-        <a asp-action="Index"
-           class="btn btn-secondary">
-            Volver a Clientes
-        </a>
+    .client-subtitle {
+        color: #64748b;
+        margin: 0;
+    }
+
+    .section-title {
+        color: #1e3a8a;
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .info-item {
+        padding: 15px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        height: 100%;
+    }
+
+    .info-label {
+        color: #64748b;
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    .info-value {
+        color: #1e293b;
+        font-weight: 600;
+        margin: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .motorcycle-count {
+        display: inline-block;
+        background: #dbeafe;
+        color: #1e40af;
+        border-radius: 20px;
+        padding: 5px 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    .motorcycle-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 17px;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        margin-bottom: 12px;
+        background: #fff;
+    }
+
+    .motorcycle-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .motorcycle-name {
+        color: #1e293b;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .motorcycle-plate {
+        display: inline-block;
+        background: #f1f5f9;
+        color: #334155;
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .empty-motorcycles {
+        background: #f8fafc;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .details-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-edit {
+        background: #1d4ed8;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 22px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-edit:hover {
+        background: #1e40af;
+        color: white;
+    }
+
+    .btn-back {
+        background: #f1f5f9;
+        color: #334155;
+        border-radius: 9px;
+        padding: 11px 22px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+
+    @@media (max-width: 576px) {
+        .details-card {
+            padding: 22px 18px;
+        }
+
+        .client-profile {
+            align-items: flex-start;
+        }
+
+        .motorcycle-item {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .details-actions {
+            flex-direction: column;
+        }
+
+        .details-actions a {
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="container details-page">
+
+    <div class="details-header">
+        <h1>Ficha del cliente</h1>
+        <p>Consulta la información personal y las motocicletas asociadas.</p>
     </div>
+
+    <div class="details-card">
+
+        <div class="client-profile">
+
+            <div class="client-avatar">
+                @(string.IsNullOrWhiteSpace(Model.Nombre)
+                    ? "C"
+                    : Model.Nombre.Substring(0, 1).ToUpper())
+            </div>
+
+            <div>
+                <h2 class="client-name">
+                    @Model.Nombre @Model.Apellido
+                </h2>
+                <p class="client-subtitle">
+                    Cliente registrado en MotoFix
+                </p>
+            </div>
+
+        </div>
+
+        <h5 class="section-title">
+            Información personal y de contacto
+        </h5>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <div class="info-item">
+                    <p class="info-label">Documento de identidad</p>
+                    <p class="info-value">@Model.Documento</p>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="info-item">
+                    <p class="info-label">Teléfono</p>
+                    <p class="info-value">@Model.Telefono</p>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="info-item">
+                    <p class="info-label">Correo electrónico</p>
+                    <p class="info-value">@Model.Correo</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="details-card">
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+            <h5 class="section-title mb-0">
+                Motocicletas asociadas
+            </h5>
+
+            <span class="motorcycle-count">
+                @motocicletas.Count() @(motocicletas.Count() == 1 ? "motocicleta" : "motocicletas")
+            </span>
+        </div>
+
+        @if (motocicletas.Any())
+        {
+            @foreach (var motocicleta in motocicletas)
+            {
+                <div class="motorcycle-item">
+
+                    <div>
+                        <p class="motorcycle-name">
+                            @motocicleta.Marca @motocicleta.Modelo
+                        </p>
+                        <span class="text-secondary small">
+                            Cilindraje: @motocicleta.Cilindraje cc
+                        </span>
+                    </div>
+
+                    <span class="motorcycle-plate">
+                        @motocicleta.Placa
+                    </span>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-motorcycles">
+                <h6 class="fw-bold mb-2">Sin motocicletas registradas</h6>
+                <p class="mb-0">
+                    Este cliente todavía no tiene motocicletas asociadas.
+                </p>
+            </div>
+        }
+
+    </div>
+
+    <div class="details-actions">
+
+        @if (puedeEditar)
+        {
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn-edit">
+                Editar cliente
+            </a>
+        }
+
+        <a asp-action="Index" class="btn-back">
+            Volver a clientes
+        </a>
+
+    </div>
+
 </div>
